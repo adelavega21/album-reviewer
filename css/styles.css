@@ -1,18 +1,33 @@
+head {
+  display: flex;
+  justify-content: center;
+  background: #9f01c7ee;
+  opacity: .8;
+  height: 7rem;
+  padding: 1rem;
+  
+}
+#album-header img {
+  height: 6rem;
+  width: 6px ;
+}
+
+
 body {
     display: grid;
     grid-template-columns: 2fr 8fr
 }
 
-#artist-header {
+/* #artist-header {
     display: flex;
     justify-content: center;
     background: #515DA2;
     opacity: .8;
     height: 7rem;
     padding: 1rem;
-}
+} */
 
-#artist-header img {
+#album-header img {
     height: 6rem;
     width: 6px ;
 }
