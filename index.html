@@ -2,24 +2,27 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Album Reviewer</title>
         <link rel="stylesheet" href="./css/styles.css">
-        <!-- <div id="album-header"> -->
-        <img src="https://blog.flamingtext.com/blog/2020/07/06/flamingtext_com_1594078605_972909880.png" alt="album-header"/>
-            <!-- </div></br> -->
+         
+        </br>
         
-            <div class="container">
-                <form class="add-artist-form">
-                    <h3>Add An Artist!</h3>
-                    <input type="text" name="name" value="" placeholder="Enter artist's name..." class="input-text" />
-                    <input type="submit" name="submit" value="Add New Artist" class="submit" />
-                </form>
-            </div>
  
     </head>
+ 
     <body>
-              
-
+        <header> 
+            <div id="album-reviewer-logo">
+                <img src="https://blog.flamingtext.com/blog/2020/07/06/flamingtext_com_1594078605_972909880.png" alt="album-header"/>
+            </div>
+        </header>
+        <div class="container">
+            <form class="add-artist-form">
+                <h3>Add An Artist!</h3>
+                <input type="text" name="name" value="" placeholder="Enter artist's name..." class="input-text" />
+                <input type="submit" name="submit" value="Add New Artist" class="submit" />
+            </form>
+        </div>     
+        <div id="grid">
         <div id="artist-container">
             <ul id="artist-list">
 
@@ -32,6 +35,8 @@
             </ul>
         </div>
         <div id="show-album"></div>
+        <div id="songs-list"></div>
+        </div>
     </body>
         <script type="text/javascript" src="./src/script.js"></script>
 </html>
