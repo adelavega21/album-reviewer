@@ -1,43 +1,117 @@
 document.addEventListener('DOMContentLoaded', () => {
 
- ARTIST_URL = "http://localhost:3000/api/v1/artists"
- ALBUM_URL = "http://localhost:3000/api/v1/albums"
- SONG_URL = "http://localhost:3000/api/v1/songs"
- COMMENT_URL = "http://localhost:3000/api/v1/comments"
- fetchArtists()
+    ARTIST_URL = "http://localhost:3000/api/v1/artists"
+    ALBUM_URL = "http://localhost:3000/api/v1/albums"
+    SONG_URL = "http://localhost:3000/api/v1/songs"
+    COMMENT_URL = "http://localhost:3000/api/v1/comments"
+    fetchArtists()
+
+    let artistList = document.getElementById("artist-list")
 
     function fetchArtists(){
         fetch(ARTIST_URL)
         .then(resp => resp.json())
         .then(artists => {getArtists(artists)})
+        .catch(error =>{
+            console.log(error);
+            
+        })
     }
 
     function getArtists(artists){
         artists.forEach(artist => { 
-            let artistList = document.getElementById("artist-list")
             let li = document.createElement("li")
             li.dataset.id = artist.id
             li.innerText = artist.name
-            li.addEventListener("click", e => {
-                let id = e.target.dataset.id
-                fetchAlbums(id)
-            })
             artistList.append(li)
+            li.addEventListener("click", e => {
+                let albums = artist.albums
+                getAlbums(albums)
+            })
+
         })
         
     }
 
-    function fetchAlbums(){
-        fetch(ALBUM_URL)
-        .then(resp => resp.json())
-        .then(console.log)
+    function getAlbums(albums) {
+        let albumList = document.querySelector("#album-list")
+        albumList.innerHTML = ""  
+        albums.forEach(album => {
+            const li = document.createElement('li')
+            li.dataset.id = album.id
+            li.innerHTML += album.title 
+            li.addEventListener('click', e =>{
+                let id = e.target.dataset.id
+                getSingleAlbum(id)
+            })
+            albumList.append(li)
+        });
+    }
+    function getSingleAlbum(id) { 
+            fetch(ALBUM_URL + `/${id}`)
+                .then(resp => resp.json())
+                .then(album => {
+                    renderAlbum(album)
+                    renderSongs(album)
+                })
     }
 
-    function getAlbums(){
 
+
+    function renderAlbum(album) {
+       let showAlbum = document.querySelector("#show-album")
+        let albumCard = document.createElement("div")
+        showAlbum.innerHTML = ""
+        albumCard.className = 'card'
+        showAlbum.append(albumCard)
+
+        let h3 = document.createElement('h3')
+        h3.innerText = album.title
+
+        let img = document.createElement('img')
+        img.src = album.image
+
+        let p1 = document.createElement('p')
+        p1.innerText = `Year -${album.year}`
+
+        let p2 = document.createElement('p')
+        p2.innerText = `Genre -${album.genre}`
+
+        let button1 = document.createElement('button')
+        button1.innerHTML = 'likes'
+
+        let button2 = document.createElement('button')
+        button2.innerText = "dislikes"
+
+        // let button = document.createElement('button')
+        // button.innerText = 'Read Book'
+        // button.addEventListener('click', e => {
+        //     console.log('hit');
+        // })
+
+        // div = document.createElement("div")
+        // div.innerHTML = addUser(album.songs)
+
+       
+        albumCard.append(h3, img, button1, button2, p1, p2);
     }
 
 
-
+    function renderSongs(album) {
+        let songs = album.songs
+        let showSongs = document.querySelector("#songs-list")
+        let songCard = document.createElement("div")
+        showSongs.innerHTML = ""
+        songCard.className = 'card'
+        showSongs.append(songCard)
+            songs.forEach(song => {
+                let li = document.createElement('li')
+                li.innerText += song.name
+                songCard.append(li)
+            })
+    }
+    // clickHandler()
+    // getSingleArtist()
+    // getSingleAlbum()
 
 })
