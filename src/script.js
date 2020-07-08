@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    let addToy = false;
+    let addArtist = false;
     ARTIST_URL = "http://localhost:3000/api/v1/artists"
     ALBUM_URL = "http://localhost:3000/api/v1/albums"
     SONG_URL = "http://localhost:3000/api/v1/songs"
     COMMENT_URL = "http://localhost:3000/api/v1/comments"
-    fetchArtists()
+    
+   
 
-    const toyFormContainer = document.querySelector(".container");
-    // const toyForm = document.querySelector(".add-toy-form");
+    const artistFormContainer = document.querySelector(".container");
     let artistList = document.getElementById("artist-list")
     const addBtn = document.querySelector("#new-artist-btn");
 
@@ -15,35 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log();
         
         // hide & seek with the form
-        addToy = !addToy;
-        if (addToy) {
-            toyFormContainer.style.display = "block";
+        addArtist = !addArtist;
+        if (addArtist) {
+            artistFormContainer.style.display = "block";
         } else {
-            toyFormContainer.style.display = "none";
+            artistFormContainer.style.display = "none";
         }
     });
     function fetchArtists(){
         fetch(ARTIST_URL)
         .then(resp => resp.json())
-        .then(artists => {getArtists(artists)})
+        .then(artists => {
+            artists.forEach(artist => {
+                getArtist(artist)
+            })
+        })
         .catch(error =>{
             console.log(error);
             
         })
     }
 
-    function getArtists(artists){
-        artists.forEach(artist => { 
-            let li = document.createElement("li")
-            li.dataset.id = artist.id
-            li.innerText = artist.name
-            artistList.append(li)
-            li.addEventListener("click", e => {
-                let albums = artist.albums
-                getAlbums(albums)
-            })
-
+    function getArtist(artist){
+        let artistLi = document.createElement("li")
+        artistLi.dataset.id = artist.id
+        artistLi.innerText = artist.name
+        artistList.append(artistLi)
+        artistLi.addEventListener("click", e => {
+            let albums = artist.albums
+            getAlbums(albums)
         })
+
         
     }
 
@@ -92,11 +94,28 @@ document.addEventListener('DOMContentLoaded', () => {
         let p2 = document.createElement('p')
         p2.innerText = `Genre -${album.genre}`
 
+        let buttonDiv = document.createElement('div')
+        buttonDiv.className = 'likes-section'
+        
+        let span1 = document.createElement('span')
+        span1.className = 'like-span'
+        span1.innerText = '0 likes'
+
         let button1 = document.createElement('button')
-        button1.innerHTML = 'likes'
+        button1.innerText = '👍'
+        
+        // <div class="likes-section">     
+        // <span class="likes">0 likes</span>          
+        // <button class="like-button">♥</button>        
+        // </div>
+
+        let span2 = document.createElement('span')
+        span2.innerText = "0 dislikes"
+        span2.className = 'dislike-span'
 
         let button2 = document.createElement('button')
-        button2.innerText = "dislikes"
+        button2.innerText = '👎'
+
 
         // let button = document.createElement('button')
         // button.innerText = 'Read Book'
@@ -109,14 +128,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let div = document.createElement('div')
         div.innerHTML = addComment(album.comments)
 
+        buttonDiv.append(button1, span1, button2, span2)
+
 
         let commentForm = document.createElement('form')
         commentForm.innerHTML = `
-        <input type="text" name="content" placeholder="Add a Comment...">
+        <input type="text" name="content" value="" placeholder="Add a Comment...">
         <input type="submit" value="Post">
         `
         
-        albumCard.append(h3, img, button1, button2, p1, p2, div, commentForm);
+        albumCard.append(h3, img, buttonDiv, p1, p2, div, commentForm);
 
 
     }
@@ -124,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function addComment(comments){
         
         return comments.map(comment => {
-           return `<div>${comment.content}</div></br>`
+           return `<div>${comment.content} <button class="delete-btn">x</button> </div></br>`
         }).join('')
     }
 
@@ -151,6 +172,40 @@ document.addEventListener('DOMContentLoaded', () => {
             })
     }
 
+
+    // we need to grab addartist form, take value and add to the api with post
+    function addNewArtist (artist){
+        // let addArtistForm = document.querySelector(".new-artist-form")
+        document.addEventListener("submit", e => {
+            e.preventDefault()
+            let addArtistForm = e.target
+            let name = addArtistForm.name.value
+            let artistObj = {
+                name: name
+            // id: artist.id
+        }
+        console.log(artistObj)
+        fetch(ARTIST_URL,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(artistObj)
+        })
+        getArtist(artistObj)
+    
+
+    })
+
+    }
+    
+
+    addNewArtist()
+    fetchArtists()
+   
+
+
     // function renderComments(album) {
     //     let comments = album.comments
     //     let showComments = document.querySelector("#show-album")
@@ -169,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //     })
  
     // }
-    // clickHandler()
     // getSingleArtist()
     // getSingleAlbum()
 
