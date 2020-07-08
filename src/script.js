@@ -1,13 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+    let addToy = false;
     ARTIST_URL = "http://localhost:3000/api/v1/artists"
     ALBUM_URL = "http://localhost:3000/api/v1/albums"
     SONG_URL = "http://localhost:3000/api/v1/songs"
     COMMENT_URL = "http://localhost:3000/api/v1/comments"
     fetchArtists()
 
+    const toyFormContainer = document.querySelector(".container");
+    // const toyForm = document.querySelector(".add-toy-form");
     let artistList = document.getElementById("artist-list")
+    const addBtn = document.querySelector("#new-artist-btn");
 
+    addBtn.addEventListener("click", () => {
+        console.log();
+        
+        // hide & seek with the form
+        addToy = !addToy;
+        if (addToy) {
+            toyFormContainer.style.display = "block";
+        } else {
+            toyFormContainer.style.display = "none";
+        }
+    });
     function fetchArtists(){
         fetch(ARTIST_URL)
         .then(resp => resp.json())
