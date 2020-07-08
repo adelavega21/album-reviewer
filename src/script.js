@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(album => {
                     renderAlbum(album)
                     renderSongs(album)
+                
                 })
     }
 
@@ -105,10 +106,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // div = document.createElement("div")
         // div.innerHTML = addUser(album.songs)
+        let div = document.createElement('div')
+        div.innerHTML = addComment(album.comments)
 
-       
-        albumCard.append(h3, img, button1, button2, p1, p2);
+
+        let commentForm = document.createElement('form')
+        commentForm.innerHTML = `
+        <input type="text" name="content" placeholder="Add a Comment...">
+        <input type="submit" value="Post">
+        `
+        
+        albumCard.append(h3, img, button1, button2, p1, p2, div, commentForm);
+
+
     }
+
+    function addComment(comments){
+        
+        return comments.map(comment => {
+           return `<div>${comment.content}</div></br>`
+        }).join('')
+    }
+
+
+    
+    // comments.forEach(comment => {
+    //     let p = document.createElement('p')
+    //     p.innerText = comment.content
+    //     p.dataset.id = comment.id
+    // })
 
 
     function renderSongs(album) {
@@ -124,6 +150,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 songCard.append(li)
             })
     }
+
+    // function renderComments(album) {
+    //     let comments = album.comments
+    //     let showComments = document.querySelector("#show-album")
+    //     let commentDiv = document.createElement('div')
+    //     showComments.append(commentDiv)
+    //     comments.forEach(comment => {
+    //         let p = document.createElement('p')
+    //         p.innerText = comment.content
+    //         p.dataset.id = comment.id
+    //         let commentForm = document.createElement('form')
+    //         commentForm.innerHTML = `
+    //         <input type="text" name="content" placeholder="Add a Comment...">
+    //         <input type="submit" value="Post">
+    //         `
+    //         commentDiv.append(p, commentForm)
+    //     })
+ 
+    // }
     // clickHandler()
     // getSingleArtist()
     // getSingleAlbum()
