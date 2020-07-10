@@ -1,7 +1,3 @@
-/* body {
-  margin: 0;
-  font-family: monospace;
-} */
 body {
   background: rgba(128, 128, 128, 0.568);
 }
@@ -16,7 +12,7 @@ header {
 }
 #album-reviewer-logo img {
   position: relative;
-  height: 120px;
+  height: 8rem;
   width: auto;
 }
 
@@ -26,7 +22,7 @@ header {
 }
 
 .card img {
-  height: 10rem;
+  height: 20rem;
   width: auto;
   align-items: center;
 
@@ -51,30 +47,6 @@ header {
     padding: 1rem;
 } 
 
-/* .toy-avatar {
-  justify-self: center;
-  height: 12rem;
-  width: auto;
-} */
-
-/* button {
-  position: relative;
-  background-color: #e04b52;
-  border: none;
-  border-radius: 5px;
-  height: 3rem;
-  width: max-content;
-  color: whitesmoke;
-  font-size: 18px;
-  justify-self: center;
-} */
-
-/* button:hover {
-  background-color: whitesmoke;
-  border: #e04b52 solid 1px;
-  color: #e04b52;
-} */
-
 .container {
   padding: 1rem;
   width: stretch;
@@ -87,32 +59,3 @@ header {
 .add-artist-form {
   width: 80%
 }
-
-/* .submit {
-  position: relative;
-  background-color: #e04b52;
-  border-radius: 5px;
-  height: 2rem;
-  width: max-content;
-  color: whitesmoke;
-  font-size: 18px;
-  justify-self: center;
-  font-family: monospace;
-  margin: 3px;
-} */
-
-/* .submit:hover {
-  background-color: whitesmoke;
-  border: #e04b52 solid 1px;
-  color: #e04b52;
-} */
-
-
-/* .input-text {
-  border-radius: 5px;
-  height: 2rem;
-  width: 60%;
-  font-size: 18px;
-  font-family: monospace;
-  margin: 3px;
-} */

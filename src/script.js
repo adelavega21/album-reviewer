@@ -80,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let albumCard = document.createElement("div")
         showAlbum.innerHTML = ""
         albumCard.className = 'card'
+        albumCard.id = album.id
         showAlbum.append(albumCard)
+
 
         let h3 = document.createElement('h3')
         h3.innerText = album.title
@@ -99,39 +101,32 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let span1 = document.createElement('span')
         span1.className = 'like-span'
-        span1.innerText = '0 likes'
+        span1.innerText = album.likes
+        span1.id = album.id
 
         let button1 = document.createElement('button')
+        button1.className = "like-btn"
         button1.innerText = '👍'
         
-        // <div class="likes-section">     
-        // <span class="likes">0 likes</span>          
-        // <button class="like-button">♥</button>        
-        // </div>
-
         let span2 = document.createElement('span')
-        span2.innerText = "0 dislikes"
+        span2.innerText = album.dislikes
+        span2.id = album.id
         span2.className = 'dislike-span'
 
         let button2 = document.createElement('button')
+        button2.className = "dislike-btn"
         button2.innerText = '👎'
 
 
-        // let button = document.createElement('button')
-        // button.innerText = 'Read Book'
-        // button.addEventListener('click', e => {
-        //     console.log('hit');
-        // })
-
-        // div = document.createElement("div")
-        // div.innerHTML = addUser(album.songs)
         let div = document.createElement('div')
+        div.className = "show-comments"
         div.innerHTML = addComment(album.comments)
 
         buttonDiv.append(button1, span1, button2, span2)
 
 
         let commentForm = document.createElement('form')
+        commentForm.className = "comment-form"
         commentForm.innerHTML = `
         <input type="text" name="content" value="" placeholder="Add a Comment...">
         <input type="submit" value="Post">
@@ -145,17 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function addComment(comments){
         
         return comments.map(comment => {
-           return `<div>${comment.content} <button class="delete-btn">x</button> </div></br>`
+           return `<div>${comment.content}</div></br>`
         }).join('')
     }
-
-
-    
-    // comments.forEach(comment => {
-    //     let p = document.createElement('p')
-    //     p.innerText = comment.content
-    //     p.dataset.id = comment.id
-    // })
 
 
     function renderSongs(album) {
@@ -175,56 +162,102 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // we need to grab addartist form, take value and add to the api with post
     function addNewArtist (artist){
-        // let addArtistForm = document.querySelector(".new-artist-form")
         document.addEventListener("submit", e => {
             e.preventDefault()
-            let addArtistForm = e.target
-            let name = addArtistForm.name.value
-            let artistObj = {
-                name: name
-            // id: artist.id
-        }
-        console.log(artistObj)
-        fetch(ARTIST_URL,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify(artistObj)
+            if(e.target.className === "add-artist-form"){
+                let addArtistForm = e.target
+                let name = addArtistForm.name.value
+                let artistObj = {
+                    name: name
+                }
+                fetch(ARTIST_URL,{
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(artistObj)
+                })
+                getArtist(artistObj)
+            }
         })
-        getArtist(artistObj)
-    
-
-    })
-
     }
     
+    function addSingleComment(div) {
+        let comments = document.querySelector(".show-comments")
+        comments.append(div)
+    }
 
+    function submitComments() {
+        document.addEventListener("submit", e => {
+            e.preventDefault()
+            if(e.target.className === "comment-form"){
+                let id = e.target.parentNode.id
+                newComment = e.target[0].value
+                let div = document.createElement('div')
+                div.append(newComment)
+                let commentObj = {
+                    album_id: `${id}`,
+                    content: `${newComment}`
+                }
+                console.log(commentObj)
+                addSingleComment(div)
+                fetch(`${COMMENT_URL}`,{
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(commentObj)
+
+                }).then(resp => resp.json())
+            }
+        })
+    }
+
+    function addLikeOrDislike() {
+        document.addEventListener("click", (e) => {
+           if (e.target.matches(".like-btn")){
+               const likeSpan = e.target.parentNode.querySelector(".like-span")
+               const likeCount = parseInt(likeSpan.textContent) + 1
+               let newLikes = `${likeCount} likes`
+               console.log(likeSpan.id)
+               
+               fetch(`${ALBUM_URL}/${likeSpan.id}`,{
+                method: "PATCH",
+                headers: {
+                  "content-type": "application/json",
+                  "accept": "application/json"
+                },
+                body: JSON.stringify({ likes: newLikes })
+              })
+              .then(response => response.json())
+              .then(albumObj => {
+                likeSpan.textContent = newLikes
+              })
+            }
+           else if(e.target.matches(".dislike-btn")){
+            const dislikeSpan = e.target.parentNode.querySelector(".dislike-span")
+            const dislikeCount= parseInt(dislikeSpan.textContent) + 1
+            let newDislikes = `${dislikeCount} dislikes`
+
+            fetch(`${ALBUM_URL}/${dislikeSpan.id}`,{
+                method: "PATCH",
+                headers: {
+                  "content-type": "application/json",
+                  "accept": "application/json"
+                },
+                body: JSON.stringify({ dislikes: newDislikes })
+              })
+              .then(response => response.json())
+              .then(albumObj => {
+                dislikeSpan.textContent = newDislikes
+              })
+        }
+        })
+    }
     addNewArtist()
     fetchArtists()
-   
-
-
-    // function renderComments(album) {
-    //     let comments = album.comments
-    //     let showComments = document.querySelector("#show-album")
-    //     let commentDiv = document.createElement('div')
-    //     showComments.append(commentDiv)
-    //     comments.forEach(comment => {
-    //         let p = document.createElement('p')
-    //         p.innerText = comment.content
-    //         p.dataset.id = comment.id
-    //         let commentForm = document.createElement('form')
-    //         commentForm.innerHTML = `
-    //         <input type="text" name="content" placeholder="Add a Comment...">
-    //         <input type="submit" value="Post">
-    //         `
-    //         commentDiv.append(p, commentForm)
-    //     })
- 
-    // }
-    // getSingleArtist()
-    // getSingleAlbum()
-
+    submitComments()
+    addLikeOrDislike()
 })
